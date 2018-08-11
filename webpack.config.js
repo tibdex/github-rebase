@@ -6,7 +6,6 @@
 const path = require("path");
 
 const pkgDir = require("pkg-dir");
-const webpack = require("webpack");
 
 const { dependencies } = require("./package");
 
@@ -22,28 +21,22 @@ module.exports = {
   module: {
     rules: [
       {
-        include: [
-          path.dirname(
-            require.resolve("@tibdex/shared-github-internals/src/git")
-          ),
-          path.join(pkgRoot, "src")
-        ],
+        exclude: /node_modules/u,
         test: /\.js$/u,
         use: {
-          loader: require.resolve("babel-loader")
-        }
-      }
-    ]
+          loader: require.resolve("babel-loader"),
+        },
+      },
+    ],
   },
   optimization: {
     // Keep the lib code readable.
-    minimize: false
+    minimize: false,
   },
   output: {
     filename: "index.js",
     libraryTarget: "commonjs2",
-    path: path.join(pkgRoot, "lib")
+    path: path.join(pkgRoot, "lib"),
   },
-  plugins: [new webpack.IgnorePlugin(/^encoding$/u, /node-fetch/u)],
-  target: "node"
+  target: "node",
 };

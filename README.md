@@ -21,7 +21,7 @@ githubRebase({
   // The login of the repository owner.
   owner,
   // The name of the repository.
-  repo
+  repo,
 }).then(newHeadSha => {
   // Do something.
 });

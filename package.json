@@ -1,33 +1,34 @@
 {
   "author": "Thibault Derousseaux <tibdex@gmail.com>",
   "dependencies": {
-    "debug": "3.1.0",
-    "github-cherry-pick": "0.1.5"
+    "debug": "^3.1.0",
+    "github-cherry-pick": "^0.1.5",
+    "shared-github-internals": "^0.1.2"
   },
   "description": "Rebase a pull request using the GitHub REST API",
   "devDependencies": {
-    "@octokit/rest": "15.9.4",
-    "@tibdex/shared-github-internals": "tibdex/shared-github-internals#a7c95a3",
-    "babel-core": "6.26.3",
-    "babel-eslint": "8.2.6",
-    "babel-jest": "23.4.2",
-    "babel-loader": "7.1.5",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-flow": "6.23.0",
-    "envalid": "4.1.4",
-    "eslint": "5.3.0",
-    "eslint-config-prettier": "2.9.0",
-    "eslint-plugin-flowtype": "2.50.0",
-    "eslint-plugin-import": "2.13.0",
-    "eslint-plugin-security": "1.4.0",
-    "eslint-plugin-unicorn": "5.0.0",
-    "flow-bin": "0.78.0",
-    "flow-typed": "2.4.0",
-    "jest": "23.4.2",
-    "jest-junit": "5.1.0",
-    "prettier": "1.14.2",
-    "webpack": "4.16.5",
-    "webpack-cli": "3.1.0"
+    "@octokit/rest": "^15.9.4",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "envalid": "^4.1.4",
+    "eslint": "^5.3.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-unicorn": "^5.0.0",
+    "flow-bin": "^0.78.0",
+    "flow-copy-source": "^2.0.2",
+    "flow-typed": "^2.4.0",
+    "jest": "^23.4.2",
+    "jest-junit": "^5.1.0",
+    "prettier": "^1.14.2",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
   },
   "engines": {
     "node": ">= 6.11.2"
@@ -47,12 +48,13 @@
   "name": "github-rebase",
   "repository": "github:tibdex/github-rebase",
   "scripts": {
-    "build": "webpack-cli",
+    "build": "webpack-cli && flow-copy-source src lib",
     "eslint": "eslint . --max-warnings 0",
     "flow": "flow",
     "flow-typed": "flow-typed",
+    "prepublish": "yarn build",
     "prettier": "prettier \"**/*.{js,json,md,yml}\"",
     "test": "jest"
   },
-  "version": "0.1.4"
+  "version": "0.1.5"
 }

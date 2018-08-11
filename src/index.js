@@ -1,6 +1,8 @@
 // @flow strict
 
 import type { Github } from "@octokit/rest";
+import createDebug from "debug";
+import cherryPick from "github-cherry-pick";
 import {
   type PullRequestNumber,
   type RepoName,
@@ -8,10 +10,8 @@ import {
   type Sha,
   fetchReferenceSha,
   updateReference,
-  withTemporaryReference
-} from "@tibdex/shared-github-internals/src/git";
-import createDebug from "debug";
-import cherryPick from "github-cherry-pick";
+  withTemporaryReference,
+} from "shared-github-internals/lib/git";
 
 import { name as packageName } from "../package";
 
@@ -35,14 +35,14 @@ const checkSameHead = async ({
   owner,
   ref,
   repo,
-  sha: expectedSha
+  sha: expectedSha,
 }) => {
   const actualSha = await fetchReferenceSha({ octokit, owner, ref, repo });
   if (actualSha !== expectedSha) {
     throw new Error(
       [
         `Rebase aborted because the head branch changed.`,
-        `The current SHA of ${ref} is ${actualSha} but it was expected to still be ${expectedSha}.`
+        `The current SHA of ${ref} is ${actualSha} but it was expected to still be ${expectedSha}.`,
       ].join("\n")
     );
   }
@@ -55,13 +55,13 @@ const rebasePullRequest = async ({
   number,
   octokit,
   owner,
-  repo
+  repo,
 }: {
   _intercept?: ({ headInitialSha: Sha }) => Promise<void>,
   number: PullRequestNumber,
   octokit: Github,
   owner: RepoOwner,
-  repo: RepoName
+  repo: RepoName,
 }): Promise<Sha> => {
   const debug = createDebug(packageName);
   debug("starting", { number, owner, repo });
@@ -69,8 +69,8 @@ const rebasePullRequest = async ({
   const {
     data: {
       base: { ref: baseRef },
-      head: { ref: headRef, sha: headInitialSha }
-    }
+      head: { ref: headRef, sha: headInitialSha },
+    },
   } = await octokit.pullRequests.get({ number, owner, repo });
   // The SHA given by GitHub for the base branch is not always up to date.
   // A request is made to fetch the actual one.
@@ -78,14 +78,14 @@ const rebasePullRequest = async ({
     octokit,
     owner,
     ref: baseRef,
-    repo
+    repo,
   });
   const commits = await fetchCommits({ number, octokit, owner, repo });
   debug("commits", {
     baseInitialSha,
     commits,
     headInitialSha,
-    headRef
+    headRef,
   });
   await _intercept({ headInitialSha });
   return withTemporaryReference({
@@ -96,14 +96,14 @@ const rebasePullRequest = async ({
         head: temporaryRef,
         octokit,
         owner,
-        repo
+        repo,
       });
       await checkSameHead({
         octokit,
         owner,
         ref: headRef,
         repo,
-        sha: headInitialSha
+        sha: headInitialSha,
       });
       debug("updating reference with new SHA", newSha);
       await updateReference({
@@ -113,7 +113,7 @@ const rebasePullRequest = async ({
         owner,
         ref: headRef,
         repo,
-        sha: newSha
+        sha: newSha,
       });
       debug("reference updated");
       return newSha;
@@ -122,7 +122,7 @@ const rebasePullRequest = async ({
     owner,
     ref: `rebase-pull-request-${number}`,
     repo,
-    sha: baseInitialSha
+    sha: baseInitialSha,
   });
 };
 
