@@ -67,7 +67,7 @@ describe("nominal behavior", () => {
     },
   };
 
-  let closePullRequest, deleteReferences, number, refsDetails, sha;
+  let deleteReferences, number, refsDetails, sha;
 
   beforeAll(async () => {
     ({ deleteReferences, refsDetails } = await createReferences({
@@ -76,13 +76,13 @@ describe("nominal behavior", () => {
       repo,
       state,
     }));
-    ({ closePullRequest, number } = await createPullRequest({
+    number = await createPullRequest({
       base: refsDetails.master.ref,
       head: refsDetails.feature.ref,
       octokit,
       owner,
       repo,
-    }));
+    });
     sha = await rebasePullRequest({
       number,
       octokit,
@@ -92,7 +92,6 @@ describe("nominal behavior", () => {
   }, 20000);
 
   afterAll(async () => {
-    await closePullRequest();
     await deleteReferences();
   });
 
@@ -149,7 +148,7 @@ describe("atomicity", () => {
       },
     ];
 
-    let closePullRequest, deleteReferences, number, refsDetails;
+    let deleteReferences, number, refsDetails;
 
     beforeAll(async () => {
       ({ deleteReferences, refsDetails } = await createReferences({
@@ -173,17 +172,16 @@ describe("atomicity", () => {
           },
         },
       }));
-      ({ closePullRequest, number } = await createPullRequest({
+      number = await createPullRequest({
         base: refsDetails.master.ref,
         head: refsDetails.feature.ref,
         octokit,
         owner,
         repo,
-      }));
+      });
     }, 15000);
 
     afterAll(async () => {
-      await closePullRequest();
       await deleteReferences();
     });
 
@@ -236,7 +234,7 @@ describe("atomicity", () => {
       },
     ];
 
-    let closePullRequest, deleteReferences, number, refsDetails;
+    let deleteReferences, number, refsDetails;
 
     beforeAll(async () => {
       ({ deleteReferences, refsDetails } = await createReferences({
@@ -256,17 +254,16 @@ describe("atomicity", () => {
           },
         },
       }));
-      ({ closePullRequest, number } = await createPullRequest({
+      number = await createPullRequest({
         base: refsDetails.master.ref,
         head: refsDetails.feature.ref,
         octokit,
         owner,
         repo,
-      }));
+      });
     }, 15000);
 
     afterAll(async () => {
-      await closePullRequest();
       await deleteReferences();
     });
 

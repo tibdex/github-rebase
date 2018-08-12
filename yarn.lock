@@ -4212,6 +4212,14 @@ shared-github-internals@^0.1.3:
     envalid "^4.1.4"
     uuid "^3.3.2"
 
+shared-github-internals@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/shared-github-internals/-/shared-github-internals-0.1.4.tgz#239cbce929e2d1c204e6ed2ac107d69500e677d6"
+  dependencies:
+    "@octokit/rest" "^15.9.5"
+    envalid "^4.1.4"
+    uuid "^3.3.2"
+
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"

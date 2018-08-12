@@ -8,27 +8,13 @@ import {
   type RepoName,
   type RepoOwner,
   type Sha,
+  fetchCommits,
   fetchReferenceSha,
   updateReference,
   withTemporaryReference,
 } from "shared-github-internals/lib/git";
 
 import { name as packageName } from "../package";
-
-const getCommitShas = response => response.data.map(({ sha }) => sha);
-
-const fetchCommits = async ({ number, octokit, owner, repo }) => {
-  let response = await octokit.pullRequests.getCommits({ number, owner, repo });
-  const commits = getCommitShas(response);
-  while (octokit.hasNextPage(response)) {
-    // Pagination is a legit use-case for using await in loops.
-    // See https://github.com/octokit/rest.js#pagination
-    // eslint-disable-next-line no-await-in-loop
-    response = await octokit.getNextPage(response);
-    commits.push(...getCommitShas(response));
-  }
-  return commits;
-};
 
 const checkSameHead = async ({
   octokit,
