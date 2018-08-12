@@ -11,5 +11,4 @@ module.exports = {
   },
   reporters: ["default", ["jest-junit", { output: "./reports/junit.xml" }]],
   testEnvironment: "node",
-  transformIgnorePatterns: ["node_modules/(?!(@tibdex)/)"],
 };
