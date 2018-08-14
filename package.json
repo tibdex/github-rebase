@@ -7,7 +7,6 @@
   },
   "description": "Rebase a pull request using the GitHub REST API",
   "devDependencies": {
-    "@octokit/rest": "^15.9.4",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
@@ -53,5 +52,5 @@
     "prettier": "prettier \"**/*.{js,json,md,yml}\"",
     "test": "jest"
   },
-  "version": "0.1.7"
+  "version": "0.1.8"
 }
