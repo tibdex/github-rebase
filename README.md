@@ -18,9 +18,9 @@ rebasePullRequest({
   // An already-authenticated instance of https://www.npmjs.com/package/@octokit/rest.
   octokit,
   // The username of the repository owner.
-  owner: 'tibdex',
+  owner: "tibdex",
   // The name of the repository.
-  repo: 'my-cool-project',
+  repo: "my-cool-project",
 }).then(newHeadSha => {
   // Do something.
 });
@@ -123,7 +123,7 @@ To rebase the pull request, `github-rebase` would then take the following steps:
   In that case, the commit that was just pushed won't be part of the pull request head branch anymore.
   It doesn't mean that this particular commit is completely lost.
   Commits are immutable and, once pushed, they can always be retrieved from their SHA.
-  
+
   There is no way to fix this issue as the GitHub REST API doesn't provide a compare-and-swap endpoint for updating references like it does for merges.
   Hopefully the issue should almost never occur since the window during which the head branch is vulnerable usually lasts less than 100 milliseconds (the average GitHub REST API response time).
 
