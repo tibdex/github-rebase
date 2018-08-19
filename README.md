@@ -123,6 +123,7 @@ To rebase the pull request, `github-rebase` would then take the following steps:
   In that case, the commit that was just pushed won't be part of the pull request head branch anymore.
   It doesn't mean that this particular commit is completely lost.
   Commits are immutable and, once pushed, they can always be retrieved from their SHA.
+  See [Recovering a commit from GitHub’s Reflog](https://objectpartners.com/2014/02/11/recovering-a-commit-from-githubs-reflog/) and [this Stack Overflow comment](https://stackoverflow.com/questions/4367977/how-to-remove-a-dangling-commit-from-github/32840385#comment38892952_4368673) that shows that GitHub keeps views of orphan commits in cache for a **long time**.
 
   There is no way to fix this issue as the GitHub REST API doesn't provide a compare-and-swap endpoint for updating references like it does for merges.
   Hopefully the issue should almost never occur since the window during which the head branch is vulnerable usually lasts less than 100 milliseconds (the average GitHub REST API response time).
