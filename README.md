@@ -119,11 +119,12 @@ To rebase the pull request, `github-rebase` would then take the following steps:
 `github-rebase` tries as hard as possible to be atomic.
 
 - The underlying cherry-pick operations are atomic.
-- The only thing that can go wrong is when a commit is pushed on the pull request head branch between the steps 3. and 4. explained above.
+- The only thing that can go wrong is when a commit is pushed on the pull request head branch between steps 3 and 4 explained above.
   In that case, the commit that was just pushed won't be part of the pull request head branch anymore.
   It doesn't mean that this particular commit is completely lost.
   Commits are immutable and, once pushed, they can always be retrieved from their SHA.
+  
   There is no way to fix this issue as the GitHub REST API doesn't provide a compare-and-swap endpoint for updating references like it does for merges.
-  Hopefully the issue should almost never occurs since the window during which the head branch is vulnerable usually lasts less than 100 milliseconds (the average GitHub REST API response time).
+  Hopefully the issue should almost never occur since the window during which the head branch is vulnerable usually lasts less than 100 milliseconds (the average GitHub REST API response time).
 
 There are [tests](tests/index.test.js) for it.
