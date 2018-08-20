@@ -52,5 +52,5 @@
     "prettier": "prettier \"**/*.{js,json,md,yml}\"",
     "test": "jest"
   },
-  "version": "0.1.8"
+  "version": "0.1.9"
 }
