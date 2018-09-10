@@ -256,26 +256,23 @@ describe("atomicity", () => {
     test(
       "whole operation aborted",
       async () => {
-        try {
-          await rebasePullRequest({
+        await expect(
+          rebasePullRequest({
             // eslint-disable-next-line no-undefined
             _intercept: getIntercept ? getIntercept(refsDetails) : undefined,
             number,
             octokit,
             owner,
             repo,
-          });
-          throw new Error("The rebase should have failed");
-        } catch (error) {
-          expect(error.message).toMatch(errorRegex);
-          const featureCommits = await fetchReferenceCommits({
-            octokit,
-            owner,
-            ref: refsDetails.feature.ref,
-            repo,
-          });
-          expect(featureCommits).toEqual(expectedFeatureCommits);
-        }
+          })
+        ).rejects.toThrow(errorRegex);
+        const featureCommits = await fetchReferenceCommits({
+          octokit,
+          owner,
+          ref: refsDetails.feature.ref,
+          repo,
+        });
+        expect(featureCommits).toEqual(expectedFeatureCommits);
       },
       20000
     );
