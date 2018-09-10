@@ -43,7 +43,7 @@ const rebasePullRequest = async ({
   owner,
   repo,
 }: {
-  _intercept?: ({ headInitialSha: Sha }) => Promise<void>,
+  _intercept?: ({ initialHeadSha: Sha }) => Promise<void>,
   number: PullRequestNumber,
   octokit: Github,
   owner: RepoOwner,
@@ -55,7 +55,7 @@ const rebasePullRequest = async ({
   const {
     data: {
       base: { ref: baseRef },
-      head: { ref: headRef, sha: headInitialSha },
+      head: { ref: headRef, sha: initialHeadSha },
     },
   } = await octokit.pullRequests.get({ number, owner, repo });
   // The SHA given by GitHub for the base branch is not always up to date.
@@ -70,10 +70,10 @@ const rebasePullRequest = async ({
   debug("commits", {
     baseInitialSha,
     commits,
-    headInitialSha,
     headRef,
+    initialHeadSha,
   });
-  await _intercept({ headInitialSha });
+  await _intercept({ initialHeadSha });
   return withTemporaryReference({
     action: async temporaryRef => {
       debug({ temporaryRef });
@@ -89,7 +89,7 @@ const rebasePullRequest = async ({
         owner,
         ref: headRef,
         repo,
-        sha: headInitialSha,
+        sha: initialHeadSha,
       });
       debug("updating reference with new SHA", newSha);
       await updateReference({

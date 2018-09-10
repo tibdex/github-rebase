@@ -2,7 +2,7 @@
   "author": "Thibault Derousseaux <tibdex@gmail.com>",
   "dependencies": {
     "debug": "^3.1.0",
-    "github-cherry-pick": "^0.1.8",
+    "github-cherry-pick": "^0.1.11",
     "shared-github-internals": "^0.1.4"
   },
   "description": "Rebase a pull request using the GitHub REST API",
@@ -52,5 +52,5 @@
     "prettier": "prettier \"**/*.{js,json,md,yml}\"",
     "test": "jest"
   },
-  "version": "0.1.9"
+  "version": "0.1.10"
 }

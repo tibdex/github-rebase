@@ -15,6 +15,14 @@ import {
 
 import { rebasePullRequest } from "../src";
 
+const [initial, feature1st, feature2nd, master1st, master2nd] = [
+  "initial",
+  "feature 1st",
+  "feature 2nd",
+  "master 1st",
+  "master 2nd",
+];
+
 let octokit, owner, repo;
 
 beforeAll(() => {
@@ -22,14 +30,6 @@ beforeAll(() => {
 });
 
 describe("nominal behavior", () => {
-  const [initial, feature1st, feature2nd, master1st, master2nd] = [
-    "initial",
-    "feature 1st",
-    "feature 2nd",
-    "master 1st",
-    "master 2nd",
-  ];
-
   const [
     initialCommit,
     feature1stCommit,
@@ -129,190 +129,155 @@ describe("nominal behavior", () => {
 });
 
 describe("atomicity", () => {
-  describe("one of the commits cannot be cherry-picked", () => {
-    const [initial, feature1st, master1st, master2nd] = [
-      "initial",
-      "feature 1st",
-      "master 1st",
-      "master 2nd",
-    ];
-
-    const [initialCommit, feature1stCommit] = [
-      {
-        lines: [initial, initial],
-        message: initial,
-      },
-      {
-        lines: [feature1st, initial],
-        message: feature1st,
-      },
-    ];
-
-    let deleteReferences, number, refsDetails;
-
-    beforeAll(async () => {
-      ({ deleteReferences, refsDetails } = await createReferences({
-        octokit,
-        owner,
-        repo,
-        state: {
-          initialCommit,
-          refsCommits: {
-            feature: [feature1stCommit],
-            master: [
-              {
-                lines: [initial, master1st],
-                message: master1st,
-              },
-              {
-                lines: [master2nd, master1st],
-                message: master2nd,
-              },
-            ],
+  describe.each([
+    [
+      "one of the commits cannot be cherry-picked",
+      () => {
+        const [initialCommit, feature1stCommit] = [
+          {
+            lines: [initial, initial],
+            message: initial,
           },
-        },
-      }));
-      number = await createPullRequest({
-        base: refsDetails.master.ref,
-        head: refsDetails.feature.ref,
-        octokit,
-        owner,
-        repo,
-      });
-    }, 15000);
-
-    afterAll(async () => {
-      await deleteReferences();
-    });
-
-    test(
-      "whole operation aborted",
-      async () => {
-        try {
-          await rebasePullRequest({
-            number,
-            octokit,
-            owner,
-            repo,
-          });
-          throw new Error("The rebase should have failed");
-        } catch (error) {
-          expect(error.message).toMatch(/Merge conflict/u);
-          const featureCommits = await fetchReferenceCommits({
-            octokit,
-            owner,
-            ref: refsDetails.feature.ref,
-            repo,
-          });
-          expect(featureCommits).toEqual([initialCommit, feature1stCommit]);
-        }
-      },
-      15000
-    );
-  });
-
-  describe("the head reference changed", () => {
-    const [initial, feature1st, feature2nd, master1st] = [
-      "initial",
-      "feature 1st",
-      "feature 2nd",
-      "master 1st",
-    ];
-
-    const [initialCommit, feature1stCommit, feature2ndCommit] = [
-      {
-        lines: [initial, initial],
-        message: initial,
-      },
-      {
-        lines: [feature1st, initial],
-        message: feature1st,
-      },
-      {
-        lines: [feature1st, feature2nd],
-        message: feature2nd,
-      },
-    ];
-
-    let deleteReferences, number, refsDetails;
-
-    beforeAll(async () => {
-      ({ deleteReferences, refsDetails } = await createReferences({
-        octokit,
-        owner,
-        repo,
-        state: {
-          initialCommit,
-          refsCommits: {
-            feature: [feature1stCommit],
-            master: [
-              {
-                lines: [initial, master1st],
-                message: master1st,
-              },
-            ],
+          {
+            lines: [feature1st, initial],
+            message: feature1st,
           },
-        },
-      }));
-      number = await createPullRequest({
-        base: refsDetails.master.ref,
-        head: refsDetails.feature.ref,
-        octokit,
-        owner,
-        repo,
-      });
-    }, 15000);
+        ];
 
-    afterAll(async () => {
-      await deleteReferences();
-    });
-
-    test(
-      "whole operation aborted",
-      async () => {
-        try {
-          await rebasePullRequest({
-            _intercept: async ({ headInitialSha }) => {
-              const newCommit = await createCommitFromLinesAndMessage({
-                commit: feature2ndCommit,
-                octokit,
-                owner,
-                parent: headInitialSha,
-                repo,
-              });
-              await updateReference({
-                force: false,
-                octokit,
-                owner,
-                ref: refsDetails.feature.ref,
-                repo,
-                sha: newCommit,
-              });
+        return {
+          errorRegex: /Merge conflict/u,
+          expectedFeatureCommits: [initialCommit, feature1stCommit],
+          initialState: {
+            initialCommit,
+            refsCommits: {
+              feature: [feature1stCommit],
+              master: [
+                {
+                  lines: [initial, master1st],
+                  message: master1st,
+                },
+                {
+                  lines: [master2nd, master1st],
+                  message: master2nd,
+                },
+              ],
             },
-            number,
-            octokit,
-            owner,
-            repo,
-          });
-          throw new Error("The rebase should have failed");
-        } catch (error) {
-          expect(error.message).toMatch(
-            /Rebase aborted because the head branch changed/u
-          );
-          const featureCommits = await fetchReferenceCommits({
-            octokit,
-            owner,
-            ref: refsDetails.feature.ref,
-            repo,
-          });
-          expect(featureCommits).toEqual([
+          },
+        };
+      },
+    ],
+    [
+      "the head reference changed",
+      () => {
+        const [initialCommit, feature1stCommit, feature2ndCommit] = [
+          {
+            lines: [initial, initial],
+            message: initial,
+          },
+          {
+            lines: [feature1st, initial],
+            message: feature1st,
+          },
+          {
+            lines: [feature1st, feature2nd],
+            message: feature2nd,
+          },
+        ];
+
+        return {
+          errorRegex: /Rebase aborted because the head branch changed/u,
+          expectedFeatureCommits: [
             initialCommit,
             feature1stCommit,
             feature2ndCommit,
-          ]);
+          ],
+          getIntercept: refsDetails => async ({ initialHeadSha }) => {
+            const newCommit = await createCommitFromLinesAndMessage({
+              commit: feature2ndCommit,
+              octokit,
+              owner,
+              parent: initialHeadSha,
+              repo,
+            });
+            await updateReference({
+              force: false,
+              octokit,
+              owner,
+              ref: refsDetails.feature.ref,
+              repo,
+              sha: newCommit,
+            });
+          },
+          initialState: {
+            initialCommit,
+            refsCommits: {
+              feature: [feature1stCommit],
+              master: [
+                {
+                  lines: [initial, master1st],
+                  message: master1st,
+                },
+              ],
+            },
+          },
+        };
+      },
+    ],
+  ])("%s", (tmp, getProperties) => {
+    const {
+      errorRegex,
+      expectedFeatureCommits,
+      getIntercept,
+      initialState,
+    } = getProperties();
+
+    let deleteReferences, number, refsDetails;
+
+    beforeAll(async () => {
+      ({ deleteReferences, refsDetails } = await createReferences({
+        octokit,
+        owner,
+        repo,
+        state: initialState,
+      }));
+      number = await createPullRequest({
+        base: refsDetails.master.ref,
+        head: refsDetails.feature.ref,
+        octokit,
+        owner,
+        repo,
+      });
+    }, 20000);
+
+    afterAll(async () => {
+      await deleteReferences();
+    });
+
+    test(
+      "whole operation aborted",
+      async () => {
+        try {
+          await rebasePullRequest({
+            // eslint-disable-next-line no-undefined
+            _intercept: getIntercept ? getIntercept(refsDetails) : undefined,
+            number,
+            octokit,
+            owner,
+            repo,
+          });
+          throw new Error("The rebase should have failed");
+        } catch (error) {
+          expect(error.message).toMatch(errorRegex);
+          const featureCommits = await fetchReferenceCommits({
+            octokit,
+            owner,
+            ref: refsDetails.feature.ref,
+            repo,
+          });
+          expect(featureCommits).toEqual(expectedFeatureCommits);
         }
       },
-      15000
+      20000
     );
   });
 });
