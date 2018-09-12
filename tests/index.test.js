@@ -13,7 +13,7 @@ import {
   fetchReferenceCommitsFromSha,
 } from "shared-github-internals/lib/tests/git";
 
-import { rebasePullRequest } from "../src";
+import rebasePullRequest from "../src";
 
 const [initial, feature1st, feature2nd, master1st, master2nd] = [
   "initial",

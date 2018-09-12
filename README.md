@@ -10,12 +10,12 @@ See [Autorebase](https://github.com/tibdex/autorebase) if you want to automatica
 # Usage
 
 ```javascript
-const { rebasePullRequest } = require("github-rebase");
+const rebasePullRequest = require("github-rebase");
 
 rebasePullRequest({
   // The number of the pull request to rebase.
   number: 1337,
-  // An already-authenticated instance of https://www.npmjs.com/package/@octokit/rest.
+  // An already authenticated instance of https://www.npmjs.com/package/@octokit/rest.
   octokit,
   // The username of the repository owner.
   owner: "tibdex",

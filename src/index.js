@@ -112,4 +112,4 @@ const rebasePullRequest = async ({
   });
 };
 
-export { rebasePullRequest };
+export default rebasePullRequest;
