@@ -30,7 +30,7 @@ rebasePullRequest({
 
 ## Troubleshooting
 
-`github-rebase` uses [`debug`](https://www.npmjs.com/package/debug) to log helpful information at different steps of the cherry-picking process. To enable these logs, set the `DEBUG` environment variable to `github-rebase`.
+`github-rebase` uses [`debug`](https://www.npmjs.com/package/debug) to log helpful information at different steps of the rebase process. To enable these logs, set the `DEBUG` environment variable to `github-rebase`.
 
 # How it Works
 
