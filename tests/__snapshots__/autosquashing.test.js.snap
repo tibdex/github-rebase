@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lot of things to do 1`] = `
+Object {
+  "commitsDetails": Array [
+    Object {
+      "message": "a
+
+Some details
+on two lines",
+      "sha": "0000000",
+    },
+    Object {
+      "message": "b",
+      "sha": "1111111",
+    },
+    Object {
+      "message": "fixup! a
+
+Some unnecessary details",
+      "sha": "2222222",
+    },
+    Object {
+      "message": "c",
+      "sha": "3333333",
+    },
+    Object {
+      "message": "d",
+      "sha": "4444444",
+    },
+    Object {
+      "message": "squash! fixup! a
+
+Again some more details",
+      "sha": "5555555",
+    },
+    Object {
+      "message": "squash! b",
+      "sha": "6666666",
+    },
+    Object {
+      "message": "squash! a
+
+Last fix",
+      "sha": "7777777",
+    },
+  ],
+  "expectedMessages": Array [
+    "a
+
+Some details
+on two lines
+
+squash! fixup! a
+
+Again some more details
+
+squash! a
+
+Last fix",
+    "b
+
+squash! b",
+    "c",
+    "d",
+  ],
+}
+`;
+
+exports[`nothing to do with 1`] = `
+Object {
+  "commitsDetails": Array [
+    Object {
+      "message": "a",
+      "sha": "0000000",
+    },
+    Object {
+      "message": "fixup! b",
+      "sha": "1111111",
+    },
+  ],
+  "expectedMessages": Array [
+    "a",
+    "fixup! b",
+  ],
+}
+`;
+
+exports[`simple fixup 1`] = `
+Object {
+  "commitsDetails": Array [
+    Object {
+      "message": "a",
+      "sha": "0000000",
+    },
+    Object {
+      "message": "b",
+      "sha": "1111111",
+    },
+    Object {
+      "message": "fixup! a",
+      "sha": "2222222",
+    },
+  ],
+  "expectedMessages": Array [
+    "a",
+    "b",
+  ],
+}
+`;
+
+exports[`simple squash 1`] = `
+Object {
+  "commitsDetails": Array [
+    Object {
+      "message": "a
+
+Some details",
+      "sha": "0000000",
+    },
+    Object {
+      "message": "b",
+      "sha": "1111111",
+    },
+    Object {
+      "message": "squash! a
+
+Some more details",
+      "sha": "2222222",
+    },
+  ],
+  "expectedMessages": Array [
+    "a
+
+Some details
+
+squash! a
+
+Some more details",
+    "b",
+  ],
+}
+`;

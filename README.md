@@ -5,12 +5,15 @@
 
 `github-rebase` rebases a pull request using the GitHub REST API. It doesn't merge the pull request, it only rebases its head branch on top of its base branch.
 
+`github-rebase` has built-in support for [autosquashing](https://git-scm.com/docs/git-rebase#git-rebase---autosquash). Commits with subject starting with `fixup!` or `squash!` will be rearranged and squashed automatically.
+
 See [Autorebase](https://github.com/tibdex/autorebase) if you want to automatically rebase and merge green and up-to-date pull requests.
 
 # Usage
 
 ```javascript
-const rebasePullRequest = require("github-rebase");
+import rebasePullRequest from "github-rebase";
+// const {default: rebasePullRequest} = require("github-rebase");
 
 rebasePullRequest({
   // The number of the pull request to rebase.

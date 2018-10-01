@@ -1,0 +1,321 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`autosquashing autosquashing detection 1`] = `
+Object {
+  "autosquashingNeeded": false,
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 2nd",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "fixup! feature 1st",
+            "initial",
+          ],
+          "message": "fixup! feature 1st
+
+Some unnecessary details",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "fixup! feature 1st",
+            "squash! feature 2nd",
+          ],
+          "message": "squash! feature 2nd
+
+Some interesting details",
+        },
+      ],
+      "master": Array [],
+    },
+  },
+}
+`;
+
+exports[`autosquashing commits on the feature ref are the expected ones 1`] = `
+Object {
+  "commits": Array [
+    Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    Object {
+      "lines": Array [
+        "feature 1st",
+        "initial",
+        "fixup! feature 1st",
+        "initial",
+      ],
+      "message": "feature 1st",
+    },
+    Object {
+      "lines": Array [
+        "feature 1st",
+        "feature 2nd",
+        "fixup! feature 1st",
+        "squash! feature 2nd",
+      ],
+      "message": "feature 2nd
+
+squash! feature 2nd
+
+Some interesting details",
+    },
+  ],
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 2nd",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "fixup! feature 1st",
+            "initial",
+          ],
+          "message": "fixup! feature 1st
+
+Some unnecessary details",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "fixup! feature 1st",
+            "squash! feature 2nd",
+          ],
+          "message": "squash! feature 2nd
+
+Some interesting details",
+        },
+      ],
+      "master": Array [],
+    },
+  },
+}
+`;
+
+exports[`nominal behavior autosquashing detection 1`] = `
+Object {
+  "autosquashingNeeded": false,
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 2nd",
+        },
+      ],
+      "master": Array [
+        Object {
+          "lines": Array [
+            "initial",
+            "initial",
+            "master 1st",
+            "initial",
+          ],
+          "message": "master 1st",
+        },
+        Object {
+          "lines": Array [
+            "initial",
+            "initial",
+            "master 1st",
+            "master 2nd",
+          ],
+          "message": "master 2nd",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`nominal behavior commits on the feature ref are the expected ones 1`] = `
+Object {
+  "commits": Array [
+    Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "master 1st",
+        "initial",
+      ],
+      "message": "master 1st",
+    },
+    Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "master 1st",
+        "master 2nd",
+      ],
+      "message": "master 2nd",
+    },
+    Object {
+      "lines": Array [
+        "feature 1st",
+        "initial",
+        "master 1st",
+        "master 2nd",
+      ],
+      "message": "feature 1st",
+    },
+    Object {
+      "lines": Array [
+        "feature 1st",
+        "feature 2nd",
+        "master 1st",
+        "master 2nd",
+      ],
+      "message": "feature 2nd",
+    },
+  ],
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "feature 2nd",
+            "initial",
+            "initial",
+          ],
+          "message": "feature 2nd",
+        },
+      ],
+      "master": Array [
+        Object {
+          "lines": Array [
+            "initial",
+            "initial",
+            "master 1st",
+            "initial",
+          ],
+          "message": "master 1st",
+        },
+        Object {
+          "lines": Array [
+            "initial",
+            "initial",
+            "master 1st",
+            "master 2nd",
+          ],
+          "message": "master 2nd",
+        },
+      ],
+    },
+  },
+}
+`;

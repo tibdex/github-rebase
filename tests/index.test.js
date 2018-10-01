@@ -11,9 +11,12 @@ import {
   createReferences,
   fetchReferenceCommits,
   fetchReferenceCommitsFromSha,
+  getReferenceCommitsFromGitRepo,
 } from "shared-github-internals/lib/tests/git";
 
-import rebasePullRequest from "../src";
+import rebasePullRequest, { needAutosquashing } from "../src";
+
+import { createGitRepoAndRebase } from "./utils";
 
 const [initial, feature1st, feature2nd, master1st, master2nd] = [
   "initial",
@@ -29,52 +32,84 @@ beforeAll(() => {
   ({ octokit, owner, repo } = createTestContext());
 });
 
-describe("nominal behavior", () => {
-  const [
-    initialCommit,
-    feature1stCommit,
-    feature2ndCommit,
-    master1stCommit,
-    master2ndCommit,
-  ] = [
-    {
-      lines: [initial, initial, initial, initial],
-      message: initial,
-    },
-    {
-      lines: [feature1st, initial, initial, initial],
-      message: feature1st,
-    },
-    {
-      lines: [feature1st, feature2nd, initial, initial],
-      message: feature2nd,
-    },
-    {
-      lines: [initial, initial, master1st, initial],
-      message: master1st,
-    },
-    {
-      lines: [initial, initial, master1st, master2nd],
-      message: master2nd,
-    },
-  ];
+describe.each([
+  [
+    "nominal behavior",
+    () => ({
+      initialCommit: {
+        lines: [initial, initial, initial, initial],
+        message: initial,
+      },
+      refsCommits: {
+        feature: [
+          {
+            lines: [feature1st, initial, initial, initial],
+            message: feature1st,
+          },
+          {
+            lines: [feature1st, feature2nd, initial, initial],
+            message: feature2nd,
+          },
+        ],
+        master: [
+          {
+            lines: [initial, initial, master1st, initial],
+            message: master1st,
+          },
+          {
+            lines: [initial, initial, master1st, master2nd],
+            message: master2nd,
+          },
+        ],
+      },
+    }),
+  ],
+  [
+    "autosquashing",
+    () => {
+      const fixup1st = `fixup! ${feature1st}`;
+      const squash2nd = `squash! ${feature2nd}`;
 
-  const state = {
-    initialCommit,
-    refsCommits: {
-      feature: [feature1stCommit, feature2ndCommit],
-      master: [master1stCommit, master2ndCommit],
+      return {
+        initialCommit: {
+          lines: [initial, initial, initial, initial],
+          message: initial,
+        },
+        refsCommits: {
+          feature: [
+            {
+              lines: [feature1st, initial, initial, initial],
+              message: feature1st,
+            },
+            {
+              lines: [feature1st, feature2nd, initial, initial],
+              message: feature2nd,
+            },
+            {
+              lines: [feature1st, feature2nd, fixup1st, initial],
+              message: `${fixup1st}\n\nSome unnecessary details`,
+            },
+            {
+              lines: [feature1st, feature2nd, fixup1st, squash2nd],
+              message: `${squash2nd}\n\nSome interesting details`,
+            },
+          ],
+          master: [],
+        },
+      };
     },
-  };
+  ],
+])("%s", (_tmp, getProperties) => {
+  const initialState = getProperties();
 
-  let deleteReferences, number, refsDetails, sha;
+  let deleteReferences, directory, number, refsDetails, sha;
 
   beforeAll(async () => {
     ({ deleteReferences, refsDetails } = await createReferences({
       octokit,
       owner,
       repo,
-      state,
+      state: initialState,
     }));
     number = await createPullRequest({
       base: refsDetails.master.ref,
@@ -89,10 +124,24 @@ describe("nominal behavior", () => {
       owner,
       repo,
     });
-  }, 20000);
+    directory = await createGitRepoAndRebase({
+      initialState,
+      reference: "feature",
+    });
+  }, 30000);
 
   afterAll(async () => {
     await deleteReferences();
+  });
+
+  test("autosquashing detection", async () => {
+    const autosquashingNeeded = await needAutosquashing({
+      number,
+      octokit,
+      owner,
+      repo,
+    });
+    expect({ autosquashingNeeded, initialState }).toMatchSnapshot();
   });
 
   test("returned sha is the actual feature ref sha", async () => {
@@ -106,25 +155,18 @@ describe("nominal behavior", () => {
   });
 
   test("commits on the feature ref are the expected ones", async () => {
+    const expectedCommits = await getReferenceCommitsFromGitRepo({
+      directory,
+      reference: "feature",
+    });
+    expect({ commits: expectedCommits, initialState }).toMatchSnapshot();
     const actualCommits = await fetchReferenceCommitsFromSha({
       octokit,
       owner,
       repo,
       sha,
     });
-    expect(actualCommits).toEqual([
-      initialCommit,
-      master1stCommit,
-      master2ndCommit,
-      {
-        lines: [feature1st, initial, master1st, master2nd],
-        message: feature1st,
-      },
-      {
-        lines: [feature1st, feature2nd, master1st, master2nd],
-        message: feature2nd,
-      },
-    ]);
+    expect(actualCommits).toEqual(expectedCommits);
   });
 });
 

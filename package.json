@@ -1,30 +1,32 @@
 {
   "author": "Thibault Derousseaux <tibdex@gmail.com>",
   "dependencies": {
-    "debug": "^3.1.0",
-    "github-cherry-pick": "^0.1.14",
-    "shared-github-internals": "^0.1.4"
+    "debug": "^4.0.1",
+    "github-cherry-pick": "^0.1.15",
+    "shared-github-internals": "^0.1.5"
   },
   "description": "Rebase a pull request using the GitHub REST API",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.6",
-    "babel-jest": "^23.4.2",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-flow": "^6.23.0",
-    "eslint": "^5.3.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-flowtype": "^2.50.0",
-    "eslint-plugin-import": "^2.13.0",
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-core": "^7.0.0-bridge",
+    "babel-eslint": "^9.0.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.6.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-flowtype": "^2.50.1",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-security": "^1.4.0",
-    "eslint-plugin-unicorn": "^5.0.0",
-    "flow-bin": "^0.78.0",
+    "eslint-plugin-unicorn": "^6.0.1",
+    "flow-bin": "^0.81.0",
     "flow-copy-source": "^2.0.2",
-    "flow-typed": "^2.4.0",
-    "jest": "^23.4.2",
+    "flow-typed": "^2.5.1",
+    "jest": "^23.6.0",
     "jest-junit": "^5.1.0",
-    "prettier": "^1.14.2"
+    "lodash.flatten": "^4.4.0",
+    "prettier": "^1.14.3"
   },
   "engines": {
     "node": ">= 6.11.2"
@@ -33,6 +35,7 @@
     "lib/"
   ],
   "keywords": [
+    "autosquash",
     "git",
     "github",
     "github-rest-v3",
@@ -52,5 +55,5 @@
     "prettier": "prettier \"**/*.{js,json,md,yml}\"",
     "test": "jest"
   },
-  "version": "0.2.1"
+  "version": "0.3.0"
 }

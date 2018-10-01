@@ -8,13 +8,115 @@ import {
   type RepoName,
   type RepoOwner,
   type Sha,
-  fetchCommits,
+  fetchCommitsDetails,
   fetchReferenceSha,
   updateReference,
   withTemporaryReference,
 } from "shared-github-internals/lib/git";
 
 import { name as packageName } from "../package";
+
+import getAutosquashingSteps from "./autosquashing";
+
+const needAutosquashing = async ({
+  number,
+  octokit,
+  owner,
+  repo,
+}: {
+  number: PullRequestNumber,
+  octokit: Github,
+  owner: RepoOwner,
+  repo: RepoName,
+}) => {
+  const commitsDetails = await fetchCommitsDetails({
+    number,
+    octokit,
+    owner,
+    repo,
+  });
+  return getAutosquashingSteps(commitsDetails).length > 1;
+};
+
+const autosquash = async ({
+  commitsDetails,
+  octokit,
+  owner,
+  parent,
+  ref,
+  refSha,
+  repo,
+  step,
+}) => {
+  const { author, committer } = commitsDetails.find(
+    ({ sha }) => sha === step.shas[0]
+  );
+  const {
+    data: {
+      tree: { sha: tree },
+    },
+  } = await octokit.gitdata.getCommit({ commit_sha: refSha, owner, repo });
+  const {
+    data: { sha },
+  } = await octokit.gitdata.createCommit({
+    author,
+    committer,
+    message: step.autosquashMessage,
+    owner,
+    parents: [parent],
+    repo,
+    tree,
+  });
+  await updateReference({
+    // Autosquashing is not a fast-forward operation.
+    force: true,
+    octokit,
+    owner,
+    ref,
+    repo,
+    sha,
+  });
+  return sha;
+};
+
+const performRebase = async ({ commitsDetails, octokit, owner, ref, repo }) => {
+  const initialRefSha = await fetchReferenceSha({
+    octokit,
+    owner,
+    ref,
+    repo,
+  });
+  const newRefSha = await getAutosquashingSteps(commitsDetails).reduce(
+    async (promise, step) => {
+      const parent = await promise;
+
+      const sha = await cherryPick({
+        commits: step.shas,
+        head: ref,
+        octokit,
+        owner,
+        repo,
+      });
+
+      if (step.autosquashMessage === null) {
+        return sha;
+      }
+
+      return autosquash({
+        commitsDetails,
+        octokit,
+        owner,
+        parent,
+        ref,
+        refSha: sha,
+        repo,
+        step,
+      });
+    },
+    Promise.resolve(initialRefSha)
+  );
+  return newRefSha;
+};
 
 const checkSameHead = async ({
   octokit,
@@ -66,10 +168,16 @@ const rebasePullRequest = async ({
     ref: baseRef,
     repo,
   });
-  const commits = await fetchCommits({ number, octokit, owner, repo });
-  debug("commits", {
+  // $FlowFixMe an incomprehensible error is thrown here.
+  const commitsDetails = await fetchCommitsDetails({
+    number,
+    octokit,
+    owner,
+    repo,
+  });
+  debug("commits details fetched", {
     baseInitialSha,
-    commits,
+    commitsDetails,
     headRef,
     initialHeadSha,
   });
@@ -77,11 +185,11 @@ const rebasePullRequest = async ({
   return withTemporaryReference({
     action: async temporaryRef => {
       debug({ temporaryRef });
-      const newSha = await cherryPick({
-        commits,
-        head: temporaryRef,
+      const newSha = await performRebase({
+        commitsDetails,
         octokit,
         owner,
+        ref: temporaryRef,
         repo,
       });
       await checkSameHead({
@@ -111,5 +219,7 @@ const rebasePullRequest = async ({
     sha: baseInitialSha,
   });
 };
+
+export { needAutosquashing };
 
 export default rebasePullRequest;
