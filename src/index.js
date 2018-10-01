@@ -86,6 +86,7 @@ const performRebase = async ({ commitsDetails, octokit, owner, ref, repo }) => {
     ref,
     repo,
   });
+  // $FlowFixMe Flow wronlgy believes that `commitsDetails` is a promise.
   const newRefSha = await getAutosquashingSteps(commitsDetails).reduce(
     async (promise, step) => {
       const parent = await promise;
