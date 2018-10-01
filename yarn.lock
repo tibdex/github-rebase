@@ -639,7 +639,22 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@octokit/rest@^15.2.6", "@octokit/rest@^15.9.5":
+"@octokit/rest@^15.12.0":
+  version "15.12.1"
+  resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-15.12.1.tgz#f0dc169f336f8fd05ae8d8c83371b2f0c0dd8de1"
+  integrity sha512-Nn3o2iVHHWNbw8MSOWTa67/6N1e7muaDWVMWr3FXUDSlMzB3lXlr6EdO1hwfUzpmZAkNc1rFN4y0tuy38gtd+A==
+  dependencies:
+    before-after-hook "^1.1.0"
+    btoa-lite "^1.0.0"
+    debug "^3.1.0"
+    http-proxy-agent "^2.1.0"
+    https-proxy-agent "^2.2.0"
+    lodash "^4.17.4"
+    node-fetch "^2.1.1"
+    universal-user-agent "^2.0.0"
+    url-template "^2.0.8"
+
+"@octokit/rest@^15.2.6":
   version "15.9.5"
   resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-15.9.5.tgz#e356d202bd0b517e381f705ad77d98ccb84e0c65"
   integrity sha512-vJEHSTnI4UAbCDTjVSQljPeX81zsQVNj2ruM5Oj5gxOttHD0TcfWeElcJYoITCMxQTgN6Y+bJFo6/+/0CqoacA==
@@ -1571,7 +1586,7 @@ cross-spawn@^5.0.1:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^6.0.5:
+cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
   integrity sha512-eTVLrBSt7fjbDygz805pMnstIs2VTBNkRm0qxZd+M7A5XDdxVRWO5MxGBXZhjY4cqLYLdtrGqRf8mBPmzwSpWQ==
@@ -1586,6 +1601,11 @@ crypt@~0.0.1:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
+
+crypto-random-string@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-1.0.0.tgz#a230f64f568310e1498009940790ec99545bca7e"
+  integrity sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4=
 
 cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.4"
@@ -1803,6 +1823,13 @@ electron-to-chromium@^1.3.62:
   version "1.3.70"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.70.tgz#ded377256d92d81b4257d36c65aa890274afcfd2"
   integrity sha512-WYMjqCnPVS5JA+XvwEnpwucJpVi2+q9cdCFpbhxgWGsCtforFBEkuP9+nCyy/wnU/0SyLcLRIeZct9ayMGcXoQ==
+
+end-of-stream@^1.1.0:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/end-of-stream/-/end-of-stream-1.4.1.tgz#ed29634d19baba463b6ce6b80a37213eab71ec43"
+  integrity sha512-1MkrZNvWTKCaigbn+W15elq2BB/L22nqrSY5DKlo3X6+vclJm8Bb5djXJBmEX6fS3+zCh/F4VBK5Z2KxJt4s2Q==
+  dependencies:
+    once "^1.4.0"
 
 envalid@^4.1.4:
   version "4.1.4"
@@ -2071,6 +2098,19 @@ execa@^0.7.0:
   dependencies:
     cross-spawn "^5.0.1"
     get-stream "^3.0.0"
+    is-stream "^1.1.0"
+    npm-run-path "^2.0.0"
+    p-finally "^1.0.0"
+    signal-exit "^3.0.0"
+    strip-eof "^1.0.0"
+
+execa@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-1.0.0.tgz#c6236a5bb4df6d6f15e88e7f017798216749ddd8"
+  integrity sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==
+  dependencies:
+    cross-spawn "^6.0.0"
+    get-stream "^4.0.0"
     is-stream "^1.1.0"
     npm-run-path "^2.0.0"
     p-finally "^1.0.0"
@@ -2456,6 +2496,13 @@ get-stream@^3.0.0:
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-3.0.0.tgz#8e943d1358dc37555054ecbe2edb05aa174ede14"
   integrity sha1-jpQ9E1jcN1VQVOy+LtsFqhdO3hQ=
 
+get-stream@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-4.0.0.tgz#9e074cb898bd2b9ebabb445a1766d7f43576d977"
+  integrity sha512-FneLKMENeOR7wOK0/ZXCh+lwqtnPwkeunJjRN28LPqzGvNAhYvrTAhXv6xDm4vsJ0M7lcRbIYHQudKsSy2RtSQ==
+  dependencies:
+    pump "^3.0.0"
+
 get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
@@ -2468,13 +2515,13 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-github-cherry-pick@^0.1.14:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/github-cherry-pick/-/github-cherry-pick-0.1.14.tgz#d7606327175d9cfab72fb3d28d8842694fa8dc16"
-  integrity sha512-XrHfMCCl8x+o/M/z2HwCUkIv3obLY0nHaOMZC1yTcsrjuP1Uq/8zfZO+jTLshi9P1O28Pd766/zo40oB6dSSow==
+github-cherry-pick@^0.1.15:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/github-cherry-pick/-/github-cherry-pick-0.1.15.tgz#c9f1d4544eece1f53e1522e68a0376bf36b31f58"
+  integrity sha512-9YEpFpx7XZhtdDStUqFp0NEFyeaIEV942OkRV1nBdrG4Z+euCyQF2tYlwnETjHCok3Dlig69n7d0rtxQXNSVLA==
   dependencies:
-    debug "^3.1.0"
-    shared-github-internals "^0.1.4"
+    debug "^4.0.1"
+    shared-github-internals "^0.1.5"
 
 glob-base@^0.3.0:
   version "0.3.0"
@@ -3838,6 +3885,11 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+macos-release@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/macos-release/-/macos-release-1.1.0.tgz#831945e29365b470aa8724b0ab36c8f8959d10fb"
+  integrity sha512-mmLbumEYMi5nXReB9js3WGsB8UE6cDBWyIO62Z4DNx6GbRhDxHNjA1MlzSpJ2S2KM1wyiPRA0d19uHWYYvMHjA==
+
 makeerror@1.0.x:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/makeerror/-/makeerror-1.0.11.tgz#e01a5c9109f2af79660e4e8b9587790184f5a96c"
@@ -4225,7 +4277,7 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-once@^1.3.0, once@^1.4.0:
+once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   integrity sha1-WDsap3WWHUsROsF9nFC6753Xa9E=
@@ -4279,6 +4331,14 @@ os-locale@^2.0.0:
     execa "^0.7.0"
     lcid "^1.0.0"
     mem "^1.1.0"
+
+os-name@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/os-name/-/os-name-2.0.1.tgz#b9a386361c17ae3a21736ef0599405c9a8c5dc5e"
+  integrity sha1-uaOGNhwXrjohc27wWZQFyajF3F4=
+  dependencies:
+    macos-release "^1.0.0"
+    win-release "^1.0.0"
 
 os-tmpdir@^1.0.0, os-tmpdir@^1.0.1, os-tmpdir@~1.0.2:
   version "1.0.2"
@@ -4561,6 +4621,14 @@ psl@^1.1.24:
   version "1.1.29"
   resolved "https://registry.yarnpkg.com/psl/-/psl-1.1.29.tgz#60f580d360170bb722a797cc704411e6da850c67"
   integrity sha512-AeUmQ0oLN02flVHXWh9sSJF7mcdFq0ppid/JkErufc3hGIV/AMa8Fo9VgDo/cT2jFdOWoFvHp90qqBH54W+gjQ==
+
+pump@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/pump/-/pump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"
+  integrity sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==
+  dependencies:
+    end-of-stream "^1.1.0"
+    once "^1.3.1"
 
 punycode@^1.4.1:
   version "1.4.1"
@@ -4951,7 +5019,7 @@ sax@^1.2.4:
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
   integrity sha512-4SJ3dm0WAwWy/NVeioZh5AntkdJoWKxHxcmyP622fOkgHa4z3R0TdBJICINyaSDE6uNwVc8gZr+ZinwZAH4xIA==
 
-semver@^5.5.1:
+semver@^5.0.1, semver@^5.5.1:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.1.tgz#7dfdd8814bdb7cabc7be0fb1d734cfb66c940477"
   integrity sha512-PqpAxfrEhlSUWge8dwIp4tZnQ25DIOthpiaHNIthsjEFQD6EvqUKUDM7L8O2rShkFccYo1VjJR0coWfNkCubRw==
@@ -4991,13 +5059,15 @@ setimmediate@~1.0.4:
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
 
-shared-github-internals@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/shared-github-internals/-/shared-github-internals-0.1.4.tgz#239cbce929e2d1c204e6ed2ac107d69500e677d6"
-  integrity sha512-rDX/Qc/bomMSNVeJyMbbPlYVCx60yBn+TZUvFL+acthzzF1xA0YuomP6UVBADanVrTRbHEwZ2gWbhjttWxjG+A==
+shared-github-internals@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/shared-github-internals/-/shared-github-internals-0.1.5.tgz#056527c8df8d2b827673db6ddc23595a18678cb5"
+  integrity sha512-nAt45J+EUsLl0D61D13Lxi/MPEAlYzKQ6a2bnFbVeH6WCGANrGWUl7k5KIvh2nJ3XCkt2bZm6R6HaZDJRMA5fw==
   dependencies:
-    "@octokit/rest" "^15.9.5"
+    "@octokit/rest" "^15.12.0"
     envalid "^4.1.4"
+    execa "^1.0.0"
+    tempy "^0.2.1"
     uuid "^3.3.2"
 
 shebang-command@^1.2.0:
@@ -5328,6 +5398,19 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
+temp-dir@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/temp-dir/-/temp-dir-1.0.0.tgz#0a7c0ea26d3a39afa7e0ebea9c1fc0bc4daa011d"
+  integrity sha1-CnwOom06Oa+n4OvqnB/AvE2qAR0=
+
+tempy@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/tempy/-/tempy-0.2.1.tgz#9038e4dbd1c201b74472214179bc2c6f7776e54c"
+  integrity sha512-LB83o9bfZGrntdqPuRdanIVCPReam9SOZKW0fOy5I9X3A854GGWi0tjCqoXEk84XIEYBc/x9Hq3EFop/H5wJaw==
+  dependencies:
+    temp-dir "^1.0.0"
+    unique-string "^1.0.0"
+
 test-exclude@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/test-exclude/-/test-exclude-4.2.1.tgz#dfa222f03480bca69207ca728b37d74b45f724fa"
@@ -5510,6 +5593,20 @@ union-value@^1.0.0:
     is-extendable "^0.1.1"
     set-value "^0.4.3"
 
+unique-string@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/unique-string/-/unique-string-1.0.0.tgz#9e1057cca851abb93398f8b33ae187b99caec11a"
+  integrity sha1-nhBXzKhRq7kzmPizOuGHuZyuwRo=
+  dependencies:
+    crypto-random-string "^1.0.0"
+
+universal-user-agent@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/universal-user-agent/-/universal-user-agent-2.0.1.tgz#18e591ca52b1cb804f6b9cbc4c336cf8191f80e1"
+  integrity sha512-vz+heWVydO0iyYAa65VHD7WZkYzhl7BeNVy4i54p4TF8OMiLSXdbuQe4hm+fmWAsL+rVibaQHXfhvkw3c1Ws2w==
+  dependencies:
+    os-name "^2.0.1"
+
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
@@ -5688,6 +5785,13 @@ wide-align@^1.1.0:
   integrity sha512-QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==
   dependencies:
     string-width "^1.0.2 || 2"
+
+win-release@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/win-release/-/win-release-1.1.1.tgz#5fa55e02be7ca934edfc12665632e849b72e5209"
+  integrity sha1-X6VeAr58qTTt/BJmVjLoSbcuUgk=
+  dependencies:
+    semver "^5.0.1"
 
 window-size@0.1.0:
   version "0.1.0"
