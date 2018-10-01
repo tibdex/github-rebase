@@ -5,6 +5,8 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
+      - run: git config --global user.email "john@doe.com"
+      - run: git config --global user.name "John Doe"
       - run: yarn install --frozen-lockfile
       - run: yarn build
       - run: yarn run prettier --list-different
