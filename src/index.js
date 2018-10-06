@@ -35,7 +35,8 @@ const needAutosquashing = async ({
     owner,
     repo,
   });
-  return getAutosquashingSteps(commitsDetails).length > 1;
+  const steps = getAutosquashingSteps(commitsDetails);
+  return steps.length > 1 || (steps[0] && steps[0].autosquashMessage !== null);
 };
 
 const autosquash = async ({
