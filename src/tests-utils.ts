@@ -1,19 +1,17 @@
-// @flow strict
-
-import { type Reference } from "shared-github-internals/lib/git";
+import { Reference } from "shared-github-internals/lib/git";
 import {
-  type CommandDirectory,
-  type RepoState,
+  CommandDirectory,
   createGitRepo,
   executeGitCommand,
+  RepoState,
 } from "shared-github-internals/lib/tests/git";
 
 const createGitRepoAndRebase = async ({
   initialState,
   reference,
 }: {
-  initialState: RepoState,
-  reference: Reference,
+  initialState: RepoState;
+  reference: Reference;
 }): Promise<CommandDirectory> => {
   const directory = await createGitRepo(initialState);
   await executeGitCommand({
