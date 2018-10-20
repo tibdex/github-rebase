@@ -16,12 +16,12 @@ import rebasePullRequest from "github-rebase";
 // const {default: rebasePullRequest} = require("github-rebase");
 
 rebasePullRequest({
-  // The number of the pull request to rebase.
-  number: 1337,
   // An already authenticated instance of https://www.npmjs.com/package/@octokit/rest.
   octokit,
   // The username of the repository owner.
   owner: "tibdex",
+  // The number of the pull request to rebase.
+  pullRequestNumber: 1337,
   // The name of the repository.
   repo: "my-cool-project",
 }).then(newHeadSha => {

@@ -1,22 +1,27 @@
-// @flow strict
-
+import * as Octokit from "@octokit/rest";
 import {
   fetchReferenceSha,
+  PullRequestNumber,
+  RepoName,
+  RepoOwner,
+  Sha,
   updateReference,
 } from "shared-github-internals/lib/git";
 import { createTestContext } from "shared-github-internals/lib/tests/context";
 import {
+  CommandDirectory,
   createCommitFromLinesAndMessage,
   createPullRequest,
   createReferences,
+  DeleteReferences,
   fetchReferenceCommits,
   fetchReferenceCommitsFromSha,
   getReferenceCommitsFromGitRepo,
+  RefsDetails,
 } from "shared-github-internals/lib/tests/git";
 
-import rebasePullRequest, { needAutosquashing } from "../src";
-
-import { createGitRepoAndRebase } from "./utils";
+import rebasePullRequest, { needAutosquashing } from ".";
+import { createGitRepoAndRebase } from "./tests-utils";
 
 const [initial, feature1st, feature2nd, master1st, master2nd] = [
   "initial",
@@ -26,7 +31,9 @@ const [initial, feature1st, feature2nd, master1st, master2nd] = [
   "master 2nd",
 ];
 
-let octokit, owner, repo;
+let octokit: Octokit;
+let owner: RepoOwner;
+let repo: RepoName;
 
 beforeAll(() => {
   ({ octokit, owner, repo } = createTestContext());
@@ -99,10 +106,14 @@ describe.each([
       };
     },
   ],
-])("%s", (_tmp, getProperties) => {
+])("%s", (tmp, getProperties) => {
   const initialState = getProperties();
 
-  let deleteReferences, directory, number, refsDetails, sha;
+  let deleteReferences: DeleteReferences;
+  let directory: CommandDirectory;
+  let pullRequestNumber: PullRequestNumber;
+  let refsDetails: RefsDetails;
+  let sha: Sha;
 
   beforeAll(async () => {
     ({ deleteReferences, refsDetails } = await createReferences({
@@ -111,7 +122,7 @@ describe.each([
       repo,
       state: initialState,
     }));
-    number = await createPullRequest({
+    pullRequestNumber = await createPullRequest({
       base: refsDetails.master.ref,
       head: refsDetails.feature.ref,
       octokit,
@@ -119,9 +130,9 @@ describe.each([
       repo,
     });
     sha = await rebasePullRequest({
-      number,
       octokit,
       owner,
+      pullRequestNumber,
       repo,
     });
     directory = await createGitRepoAndRebase({
@@ -136,9 +147,9 @@ describe.each([
 
   test("autosquashing detection", async () => {
     const autosquashingNeeded = await needAutosquashing({
-      number,
       octokit,
       owner,
+      pullRequestNumber,
       repo,
     });
     expect({ autosquashingNeeded, initialState }).toMatchSnapshot();
@@ -233,7 +244,11 @@ describe("atomicity", () => {
             feature1stCommit,
             feature2ndCommit,
           ],
-          getIntercept: refsDetails => async ({ initialHeadSha }) => {
+          getIntercept: (refsDetails: RefsDetails) => async ({
+            initialHeadSha,
+          }: {
+            initialHeadSha: Sha;
+          }) => {
             const newCommit = await createCommitFromLinesAndMessage({
               commit: feature2ndCommit,
               octokit,
@@ -273,7 +288,9 @@ describe("atomicity", () => {
       initialState,
     } = getProperties();
 
-    let deleteReferences, number, refsDetails;
+    let deleteReferences: DeleteReferences;
+    let pullRequestNumber: PullRequestNumber;
+    let refsDetails: RefsDetails;
 
     beforeAll(async () => {
       ({ deleteReferences, refsDetails } = await createReferences({
@@ -282,7 +299,7 @@ describe("atomicity", () => {
         repo,
         state: initialState,
       }));
-      number = await createPullRequest({
+      pullRequestNumber = await createPullRequest({
         base: refsDetails.master.ref,
         head: refsDetails.feature.ref,
         octokit,
@@ -302,11 +319,11 @@ describe("atomicity", () => {
           rebasePullRequest({
             // eslint-disable-next-line no-undefined
             _intercept: getIntercept ? getIntercept(refsDetails) : undefined,
-            number,
             octokit,
             owner,
+            pullRequestNumber,
             repo,
-          })
+          }),
         ).rejects.toThrow(errorRegex);
         const featureCommits = await fetchReferenceCommits({
           octokit,
@@ -316,7 +333,7 @@ describe("atomicity", () => {
         });
         expect(featureCommits).toEqual(expectedFeatureCommits);
       },
-      20000
+      20000,
     );
   });
 });

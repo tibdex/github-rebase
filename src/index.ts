@@ -1,38 +1,38 @@
-// @flow strict
-
-import type { Github } from "@octokit/rest";
-import createDebug from "debug";
+import * as Octokit from "@octokit/rest";
+import * as createDebug from "debug";
 import cherryPick from "github-cherry-pick";
 import {
-  type PullRequestNumber,
-  type RepoName,
-  type RepoOwner,
-  type Sha,
+  CommitDetails,
   fetchCommitsDetails,
   fetchReferenceSha,
+  PullRequestNumber,
+  Reference,
+  RepoName,
+  RepoOwner,
+  Sha,
   updateReference,
   withTemporaryReference,
 } from "shared-github-internals/lib/git";
 
-import { name as packageName } from "../package";
+import getAutosquashingSteps, { AutosquashingStep } from "./autosquashing";
 
-import getAutosquashingSteps from "./autosquashing";
+const debug = createDebug("github-rebase");
 
 const needAutosquashing = async ({
-  number,
   octokit,
   owner,
+  pullRequestNumber,
   repo,
 }: {
-  number: PullRequestNumber,
-  octokit: Github,
-  owner: RepoOwner,
-  repo: RepoName,
+  octokit: Octokit;
+  owner: RepoOwner;
+  pullRequestNumber: PullRequestNumber;
+  repo: RepoName;
 }) => {
   const commitsDetails = await fetchCommitsDetails({
-    number,
     octokit,
     owner,
+    pullRequestNumber,
     repo,
   });
   const steps = getAutosquashingSteps(commitsDetails);
@@ -48,9 +48,19 @@ const autosquash = async ({
   refSha,
   repo,
   step,
+}: {
+  commitsDetails: CommitDetails[];
+  octokit: Octokit;
+  owner: RepoOwner;
+  parent: Sha;
+  ref: Reference;
+  refSha: Sha;
+  repo: RepoName;
+  step: AutosquashingStep;
 }) => {
+  // @ts-ignore We know that the commit details will be found.
   const { author, committer } = commitsDetails.find(
-    ({ sha }) => sha === step.shas[0]
+    ({ sha: commitSha }) => commitSha === step.shas[0],
   );
   const {
     data: {
@@ -62,6 +72,7 @@ const autosquash = async ({
   } = await octokit.gitdata.createCommit({
     author,
     committer,
+    // @ts-ignore We know that the message is not null.
     message: step.autosquashMessage,
     owner,
     parents: [parent],
@@ -80,14 +91,25 @@ const autosquash = async ({
   return sha;
 };
 
-const performRebase = async ({ commitsDetails, octokit, owner, ref, repo }) => {
+const performRebase = async ({
+  commitsDetails,
+  octokit,
+  owner,
+  ref,
+  repo,
+}: {
+  commitsDetails: CommitDetails[];
+  octokit: Octokit;
+  owner: RepoOwner;
+  ref: Reference;
+  repo: RepoName;
+}) => {
   const initialRefSha = await fetchReferenceSha({
     octokit,
     owner,
     ref,
     repo,
   });
-  // $FlowFixMe Flow wronlgy believes that `commitsDetails` is a promise.
   const newRefSha = await getAutosquashingSteps(commitsDetails).reduce(
     async (promise, step) => {
       const parent = await promise;
@@ -115,7 +137,7 @@ const performRebase = async ({ commitsDetails, octokit, owner, ref, repo }) => {
         step,
       });
     },
-    Promise.resolve(initialRefSha)
+    Promise.resolve(initialRefSha),
   );
   return newRefSha;
 };
@@ -126,6 +148,12 @@ const checkSameHead = async ({
   ref,
   repo,
   sha: expectedSha,
+}: {
+  octokit: Octokit;
+  owner: RepoOwner;
+  ref: Reference;
+  repo: RepoName;
+  sha: Sha;
 }) => {
   const actualSha = await fetchReferenceSha({ octokit, owner, ref, repo });
   if (actualSha !== expectedSha) {
@@ -133,7 +161,7 @@ const checkSameHead = async ({
       [
         `Rebase aborted because the head branch changed.`,
         `The current SHA of ${ref} is ${actualSha} but it was expected to still be ${expectedSha}.`,
-      ].join("\n")
+      ].join("\n"),
     );
   }
 };
@@ -142,26 +170,29 @@ const checkSameHead = async ({
 const rebasePullRequest = async ({
   // Should only be used in tests.
   _intercept = () => Promise.resolve(),
-  number,
   octokit,
   owner,
+  pullRequestNumber,
   repo,
 }: {
-  _intercept?: ({ initialHeadSha: Sha }) => Promise<void>,
-  number: PullRequestNumber,
-  octokit: Github,
-  owner: RepoOwner,
-  repo: RepoName,
+  _intercept?: ({ initialHeadSha }: { initialHeadSha: Sha }) => Promise<void>;
+  octokit: Octokit;
+  owner: RepoOwner;
+  pullRequestNumber: PullRequestNumber;
+  repo: RepoName;
 }): Promise<Sha> => {
-  const debug = createDebug(packageName);
-  debug("starting", { number, owner, repo });
+  debug("starting", { pullRequestNumber, owner, repo });
 
   const {
     data: {
       base: { ref: baseRef },
       head: { ref: headRef, sha: initialHeadSha },
     },
-  } = await octokit.pullRequests.get({ number, owner, repo });
+  } = await octokit.pullRequests.get({
+    number: pullRequestNumber,
+    owner,
+    repo,
+  });
   // The SHA given by GitHub for the base branch is not always up to date.
   // A request is made to fetch the actual one.
   const baseInitialSha = await fetchReferenceSha({
@@ -170,11 +201,10 @@ const rebasePullRequest = async ({
     ref: baseRef,
     repo,
   });
-  // $FlowFixMe an incomprehensible error is thrown here.
   const commitsDetails = await fetchCommitsDetails({
-    number,
     octokit,
     owner,
+    pullRequestNumber,
     repo,
   });
   debug("commits details fetched", {
@@ -216,7 +246,7 @@ const rebasePullRequest = async ({
     },
     octokit,
     owner,
-    ref: `rebase-pull-request-${number}`,
+    ref: `rebase-pull-request-${pullRequestNumber}`,
     repo,
     sha: baseInitialSha,
   });
