@@ -1,5 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`fixup first commit only 1`] = `
+Object {
+  "commitsDetails": Array [
+    Object {
+      "message": "a",
+      "sha": "0000000",
+    },
+    Object {
+      "message": "fixup! a",
+      "sha": "1111111",
+    },
+    Object {
+      "message": "fixup! a",
+      "sha": "2222222",
+    },
+  ],
+  "expectedMessages": Array [
+    "a",
+  ],
+}
+`;
+
 exports[`lot of things to do 1`] = `
 Object {
   "commitsDetails": Array [

@@ -65,6 +65,7 @@ const autosquashingStepsToCommitMessages = ({
 test.each([
   ["nothing to do with", ["a", "fixup! b"]],
   ["simple fixup", ["a", "b", "fixup! a"]],
+  ["fixup first commit only", ["a", "fixup! a", "fixup! a"]],
   [
     "simple squash",
     ["a\n\nSome details", "b", "squash! a\n\nSome more details"],

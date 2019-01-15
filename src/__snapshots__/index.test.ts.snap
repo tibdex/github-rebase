@@ -1,8 +1,95 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`autosquashing autosquashing detection 1`] = `
+exports[`autosquashing first commit autosquashing detection 1`] = `
 Object {
-  "autosquashingNeeded": false,
+  "autosquashingNeeded": true,
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "fixup! feature 1st",
+          ],
+          "message": "fixup! feature 1st
+
+Some unnecessary details",
+        },
+      ],
+      "master": Array [],
+    },
+  },
+}
+`;
+
+exports[`autosquashing first commit rebase commits on the feature ref are the expected ones 1`] = `
+Object {
+  "commits": Array [
+    Object {
+      "lines": Array [
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    Object {
+      "lines": Array [
+        "feature 1st",
+        "fixup! feature 1st",
+      ],
+      "message": "feature 1st",
+    },
+  ],
+  "initialState": Object {
+    "initialCommit": Object {
+      "lines": Array [
+        "initial",
+        "initial",
+      ],
+      "message": "initial",
+    },
+    "refsCommits": Object {
+      "feature": Array [
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "initial",
+          ],
+          "message": "feature 1st",
+        },
+        Object {
+          "lines": Array [
+            "feature 1st",
+            "fixup! feature 1st",
+          ],
+          "message": "fixup! feature 1st
+
+Some unnecessary details",
+        },
+      ],
+      "master": Array [],
+    },
+  },
+}
+`;
+
+exports[`autosquashing multiple commits autosquashing detection 1`] = `
+Object {
+  "autosquashingNeeded": true,
   "initialState": Object {
     "initialCommit": Object {
       "lines": Array [
@@ -62,7 +149,7 @@ Some interesting details",
 }
 `;
 
-exports[`autosquashing commits on the feature ref are the expected ones 1`] = `
+exports[`autosquashing multiple commits rebase commits on the feature ref are the expected ones 1`] = `
 Object {
   "commits": Array [
     Object {
@@ -215,7 +302,7 @@ Object {
 }
 `;
 
-exports[`nominal behavior commits on the feature ref are the expected ones 1`] = `
+exports[`nominal behavior rebase commits on the feature ref are the expected ones 1`] = `
 Object {
   "commits": Array [
     Object {
