@@ -30,6 +30,7 @@ const [initial, feature1st, feature2nd, master1st, master2nd] = [
   "master 1st",
   "master 2nd",
 ];
+const fixup1st = `fixup! ${feature1st}`;
 
 let octokit: Octokit;
 let owner: RepoOwner;
@@ -72,9 +73,30 @@ describe.each([
     }),
   ],
   [
-    "autosquashing",
+    "autosquashing first commit",
+    () => ({
+      initialCommit: {
+        lines: [initial, initial],
+        message: initial,
+      },
+      refsCommits: {
+        feature: [
+          {
+            lines: [feature1st, initial],
+            message: feature1st,
+          },
+          {
+            lines: [feature1st, fixup1st],
+            message: `${fixup1st}\n\nSome unnecessary details`,
+          },
+        ],
+        master: [],
+      },
+    }),
+  ],
+  [
+    "autosquashing multiple commits",
     () => {
-      const fixup1st = `fixup! ${feature1st}`;
       const squash2nd = `squash! ${feature2nd}`;
 
       return {
@@ -110,10 +132,8 @@ describe.each([
   const initialState = getProperties();
 
   let deleteReferences: DeleteReferences;
-  let directory: CommandDirectory;
   let pullRequestNumber: PullRequestNumber;
   let refsDetails: RefsDetails;
-  let sha: Sha;
 
   beforeAll(async () => {
     ({ deleteReferences, refsDetails } = await createReferences({
@@ -129,17 +149,7 @@ describe.each([
       owner,
       repo,
     });
-    sha = await rebasePullRequest({
-      octokit,
-      owner,
-      pullRequestNumber,
-      repo,
-    });
-    directory = await createGitRepoAndRebase({
-      initialState,
-      reference: "feature",
-    });
-  }, 30000);
+  }, 10000);
 
   afterAll(async () => {
     await deleteReferences();
@@ -155,29 +165,47 @@ describe.each([
     expect({ autosquashingNeeded, initialState }).toMatchSnapshot();
   });
 
-  test("returned sha is the actual feature ref sha", async () => {
-    const actualRefSha = await fetchReferenceSha({
-      octokit,
-      owner,
-      ref: refsDetails.feature.ref,
-      repo,
-    });
-    expect(actualRefSha).toBe(sha);
-  });
+  describe("rebase", () => {
+    let directory: CommandDirectory;
+    let sha: Sha;
 
-  test("commits on the feature ref are the expected ones", async () => {
-    const expectedCommits = await getReferenceCommitsFromGitRepo({
-      directory,
-      reference: "feature",
+    beforeAll(async () => {
+      sha = await rebasePullRequest({
+        octokit,
+        owner,
+        pullRequestNumber,
+        repo,
+      });
+      directory = await createGitRepoAndRebase({
+        initialState,
+        reference: "feature",
+      });
+    }, 25000);
+
+    test("returned sha is the actual feature ref sha", async () => {
+      const actualRefSha = await fetchReferenceSha({
+        octokit,
+        owner,
+        ref: refsDetails.feature.ref,
+        repo,
+      });
+      expect(actualRefSha).toBe(sha);
     });
-    expect({ commits: expectedCommits, initialState }).toMatchSnapshot();
-    const actualCommits = await fetchReferenceCommitsFromSha({
-      octokit,
-      owner,
-      repo,
-      sha,
+
+    test("commits on the feature ref are the expected ones", async () => {
+      const expectedCommits = await getReferenceCommitsFromGitRepo({
+        directory,
+        reference: "feature",
+      });
+      expect({ commits: expectedCommits, initialState }).toMatchSnapshot();
+      const actualCommits = await fetchReferenceCommitsFromSha({
+        octokit,
+        owner,
+        repo,
+        sha,
+      });
+      expect(actualCommits).toEqual(expectedCommits);
     });
-    expect(actualCommits).toEqual(expectedCommits);
   });
 });
 
