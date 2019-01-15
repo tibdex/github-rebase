@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  check:
     docker:
       - image: circleci/node:10
     steps:
@@ -17,3 +17,12 @@ jobs:
       - store_artifacts:
           path: coverage/lcov-report
           destination: coverage
+
+workflows:
+  version: 2
+  check:
+    jobs:
+      - check:
+          filters:
+            branches:
+              ignore: master
