@@ -124,6 +124,4 @@ const getAutosquashingSteps = (commitsDetails: CommitDetails[]) => {
   }, initialSteps);
 };
 
-export { AutosquashingStep };
-
-export default getAutosquashingSteps;
+export { AutosquashingStep, getAutosquashingSteps };

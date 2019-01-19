@@ -1,4 +1,4 @@
-import { Reference } from "shared-github-internals/lib/git";
+import { Ref } from "shared-github-internals/lib/git";
 import {
   CommandDirectory,
   createGitRepo,
@@ -8,10 +8,10 @@ import {
 
 const createGitRepoAndRebase = async ({
   initialState,
-  reference,
+  ref,
 }: {
   initialState: RepoState;
-  reference: Reference;
+  ref: Ref;
 }): Promise<CommandDirectory> => {
   const directory = await createGitRepo(initialState);
   await executeGitCommand({
@@ -19,7 +19,7 @@ const createGitRepoAndRebase = async ({
     directory,
     // See https://stackoverflow.com/a/29094904
     env: { GIT_EDITOR: ":", GIT_SEQUENCE_EDITOR: ":" },
-    reference,
+    ref,
   });
   return directory;
 };

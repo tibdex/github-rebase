@@ -2,11 +2,11 @@ import { flatten } from "lodash";
 import {
   CommitDetails,
   CommitMessage,
-  Reference,
+  Ref,
 } from "shared-github-internals/lib/git";
-import { getReferenceCommitsFromGitRepo } from "shared-github-internals/lib/tests/git";
+import { getRefCommitsFromGitRepo } from "shared-github-internals/lib/tests/git";
 
-import getAutosquashingSteps, { AutosquashingStep } from "./autosquashing";
+import { AutosquashingStep, getAutosquashingSteps } from "./autosquashing";
 import { createGitRepoAndRebase } from "./tests-utils";
 
 const getCommit = ({
@@ -26,16 +26,16 @@ const getCommit = ({
 
 const commitsDetailsToInitialState = ({
   commitsDetails,
-  reference,
+  ref,
 }: {
   commitsDetails: CommitDetails[];
-  reference: Reference;
+  ref: Ref;
 }) => {
   const commitCounts = commitsDetails.length + 1;
   return {
     initialCommit: getCommit({ commitCounts, message: "initial", position: 0 }),
     refsCommits: {
-      [reference]: commitsDetails.map(({ message }, index) =>
+      [ref]: commitsDetails.map(({ message }, index) =>
         getCommit({ commitCounts, message, position: index + 1 }),
       ),
     },
@@ -50,15 +50,14 @@ const autosquashingStepsToCommitMessages = ({
   steps: AutosquashingStep[];
 }) =>
   flatten(
-    steps.map(
-      ({ autosquashMessage, shas }) =>
-        autosquashMessage === null
-          ? shas.map(
-              stepSha =>
-                // @ts-ignore We know that the commit details will be found.
-                commitsDetails.find(({ sha }) => sha === stepSha).message,
-            )
-          : autosquashMessage,
+    steps.map(({ autosquashMessage, shas }) =>
+      autosquashMessage === null
+        ? shas.map(
+            stepSha =>
+              // @ts-ignore We know that the commit details will be found.
+              commitsDetails.find(({ sha }) => sha === stepSha).message,
+          )
+        : autosquashMessage,
     ),
   );
 
@@ -84,7 +83,7 @@ test.each([
     ],
   ],
 ])("%s", async (tmp, commitMessages) => {
-  const reference = "feature";
+  const ref = "feature";
   const commitsDetails = commitMessages.map(
     (message: CommitMessage, index: number) => ({
       message,
@@ -94,13 +93,13 @@ test.each([
   const directory = await createGitRepoAndRebase({
     initialState: commitsDetailsToInitialState({
       commitsDetails,
-      reference,
+      ref,
     }),
-    reference,
+    ref,
   });
-  const expectedCommits = await getReferenceCommitsFromGitRepo({
+  const expectedCommits = await getRefCommitsFromGitRepo({
     directory,
-    reference,
+    ref,
   });
   const expectedMessages = expectedCommits
     .slice(1)

@@ -1,5 +1,4 @@
-[![npm version](https://img.shields.io/npm/v/github-rebase.svg)](https://npmjs.org/package/github-rebase)
-[![build status](https://img.shields.io/circleci/project/github/tibdex/github-rebase.svg)](https://circleci.com/gh/tibdex/github-rebase)
+[![npm version](https://img.shields.io/npm/v/github-rebase.svg)](https://npmjs.org/package/github-rebase) [![build status](https://img.shields.io/circleci/project/github/tibdex/github-rebase.svg)](https://circleci.com/gh/tibdex/github-rebase)
 
 # Goal
 
@@ -12,21 +11,20 @@ See [Autorebase](https://github.com/tibdex/autorebase) if you want to automatica
 # Usage
 
 ```javascript
-import rebasePullRequest from "github-rebase";
-// const {default: rebasePullRequest} = require("github-rebase");
+import { rebasePullRequest } from "github-rebase";
 
-rebasePullRequest({
-  // An already authenticated instance of https://www.npmjs.com/package/@octokit/rest.
-  octokit,
-  // The username of the repository owner.
-  owner: "tibdex",
-  // The number of the pull request to rebase.
-  pullRequestNumber: 1337,
-  // The name of the repository.
-  repo: "my-cool-project",
-}).then(newHeadSha => {
-  // Do something.
-});
+const example = async () => {
+  const newHeadSha = await rebasePullRequest({
+    // An already authenticated instance of https://www.npmjs.com/package/@octokit/rest.
+    octokit,
+    // The username of the repository owner.
+    owner: "tibdex",
+    // The number of the pull request to rebase.
+    pullRequestNumber: 1337,
+    // The name of the repository.
+    repo: "my-cool-project",
+  });
+};
 ```
 
 `github-rebase` can run on Node.js and in recent browsers.
