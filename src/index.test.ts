@@ -1,26 +1,26 @@
 import * as Octokit from "@octokit/rest";
 import {
-  fetchReferenceSha,
+  fetchRefSha,
   PullRequestNumber,
   RepoName,
   RepoOwner,
   Sha,
-  updateReference,
+  updateRef,
 } from "shared-github-internals/lib/git";
 import { createTestContext } from "shared-github-internals/lib/tests/context";
 import {
   CommandDirectory,
   createCommitFromLinesAndMessage,
   createPullRequest,
-  createReferences,
-  DeleteReferences,
-  fetchReferenceCommits,
-  fetchReferenceCommitsFromSha,
-  getReferenceCommitsFromGitRepo,
+  createRefs,
+  DeleteRefs,
+  fetchRefCommits,
+  fetchRefCommitsFromSha,
+  getRefCommitsFromGitRepo,
   RefsDetails,
 } from "shared-github-internals/lib/tests/git";
 
-import rebasePullRequest, { needAutosquashing } from ".";
+import { needAutosquashing, rebasePullRequest } from ".";
 import { createGitRepoAndRebase } from "./tests-utils";
 
 const [initial, feature1st, feature2nd, master1st, master2nd] = [
@@ -131,12 +131,12 @@ describe.each([
 ])("%s", (tmp, getProperties) => {
   const initialState = getProperties();
 
-  let deleteReferences: DeleteReferences;
+  let deleteRefs: DeleteRefs;
   let pullRequestNumber: PullRequestNumber;
   let refsDetails: RefsDetails;
 
   beforeAll(async () => {
-    ({ deleteReferences, refsDetails } = await createReferences({
+    ({ deleteRefs, refsDetails } = await createRefs({
       octokit,
       owner,
       repo,
@@ -152,7 +152,7 @@ describe.each([
   }, 10000);
 
   afterAll(async () => {
-    await deleteReferences();
+    await deleteRefs();
   });
 
   test("autosquashing detection", async () => {
@@ -178,12 +178,12 @@ describe.each([
       });
       directory = await createGitRepoAndRebase({
         initialState,
-        reference: "feature",
+        ref: "feature",
       });
     }, 25000);
 
     test("returned sha is the actual feature ref sha", async () => {
-      const actualRefSha = await fetchReferenceSha({
+      const actualRefSha = await fetchRefSha({
         octokit,
         owner,
         ref: refsDetails.feature.ref,
@@ -193,12 +193,12 @@ describe.each([
     });
 
     test("commits on the feature ref are the expected ones", async () => {
-      const expectedCommits = await getReferenceCommitsFromGitRepo({
+      const expectedCommits = await getRefCommitsFromGitRepo({
         directory,
-        reference: "feature",
+        ref: "feature",
       });
       expect({ commits: expectedCommits, initialState }).toMatchSnapshot();
-      const actualCommits = await fetchReferenceCommitsFromSha({
+      const actualCommits = await fetchRefCommitsFromSha({
         octokit,
         owner,
         repo,
@@ -248,7 +248,7 @@ describe("atomicity", () => {
       },
     ],
     [
-      "the head reference changed",
+      "the head ref changed",
       () => {
         const [initialCommit, feature1stCommit, feature2ndCommit] = [
           {
@@ -284,7 +284,7 @@ describe("atomicity", () => {
               parent: initialHeadSha,
               repo,
             });
-            await updateReference({
+            await updateRef({
               force: false,
               octokit,
               owner,
@@ -316,12 +316,12 @@ describe("atomicity", () => {
       initialState,
     } = getProperties();
 
-    let deleteReferences: DeleteReferences;
+    let deleteRefs: DeleteRefs;
     let pullRequestNumber: PullRequestNumber;
     let refsDetails: RefsDetails;
 
     beforeAll(async () => {
-      ({ deleteReferences, refsDetails } = await createReferences({
+      ({ deleteRefs, refsDetails } = await createRefs({
         octokit,
         owner,
         repo,
@@ -337,31 +337,27 @@ describe("atomicity", () => {
     }, 20000);
 
     afterAll(async () => {
-      await deleteReferences();
+      await deleteRefs();
     });
 
-    test(
-      "whole operation aborted",
-      async () => {
-        await expect(
-          rebasePullRequest({
-            // eslint-disable-next-line no-undefined
-            _intercept: getIntercept ? getIntercept(refsDetails) : undefined,
-            octokit,
-            owner,
-            pullRequestNumber,
-            repo,
-          }),
-        ).rejects.toThrow(errorRegex);
-        const featureCommits = await fetchReferenceCommits({
+    test("whole operation aborted", async () => {
+      await expect(
+        rebasePullRequest({
+          // eslint-disable-next-line no-undefined
+          _intercept: getIntercept ? getIntercept(refsDetails) : undefined,
           octokit,
           owner,
-          ref: refsDetails.feature.ref,
+          pullRequestNumber,
           repo,
-        });
-        expect(featureCommits).toEqual(expectedFeatureCommits);
-      },
-      20000,
-    );
+        }),
+      ).rejects.toThrow(errorRegex);
+      const featureCommits = await fetchRefCommits({
+        octokit,
+        owner,
+        ref: refsDetails.feature.ref,
+        repo,
+      });
+      expect(featureCommits).toEqual(expectedFeatureCommits);
+    }, 20000);
   });
 });

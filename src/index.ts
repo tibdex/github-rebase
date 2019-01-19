@@ -1,20 +1,20 @@
 import * as Octokit from "@octokit/rest";
 import * as createDebug from "debug";
-import cherryPick from "github-cherry-pick";
+import { cherryPickCommits } from "github-cherry-pick";
 import {
   CommitDetails,
   fetchCommitsDetails,
-  fetchReferenceSha,
+  fetchRefSha,
   PullRequestNumber,
-  Reference,
+  Ref,
   RepoName,
   RepoOwner,
   Sha,
-  updateReference,
-  withTemporaryReference,
+  updateRef,
+  withTemporaryRef,
 } from "shared-github-internals/lib/git";
 
-import getAutosquashingSteps, { AutosquashingStep } from "./autosquashing";
+import { AutosquashingStep, getAutosquashingSteps } from "./autosquashing";
 
 const debug = createDebug("github-rebase");
 
@@ -53,7 +53,7 @@ const autosquash = async ({
   octokit: Octokit;
   owner: RepoOwner;
   parent: Sha;
-  ref: Reference;
+  ref: Ref;
   refSha: Sha;
   repo: RepoName;
   step: AutosquashingStep;
@@ -66,20 +66,19 @@ const autosquash = async ({
     data: {
       tree: { sha: tree },
     },
-  } = await octokit.gitdata.getCommit({ commit_sha: refSha, owner, repo });
+  } = await octokit.git.getCommit({ commit_sha: refSha, owner, repo });
   const {
     data: { sha },
-  } = await octokit.gitdata.createCommit({
+  } = await octokit.git.createCommit({
     author,
     committer,
-    // @ts-ignore We know that the message is not null.
-    message: step.autosquashMessage,
+    message: String(step.autosquashMessage),
     owner,
     parents: [parent],
     repo,
     tree,
   });
-  await updateReference({
+  await updateRef({
     // Autosquashing is not a fast-forward operation.
     force: true,
     octokit,
@@ -101,10 +100,10 @@ const performRebase = async ({
   commitsDetails: CommitDetails[];
   octokit: Octokit;
   owner: RepoOwner;
-  ref: Reference;
+  ref: Ref;
   repo: RepoName;
 }) => {
-  const initialRefSha = await fetchReferenceSha({
+  const initialRefSha = await fetchRefSha({
     octokit,
     owner,
     ref,
@@ -114,7 +113,7 @@ const performRebase = async ({
     async (promise, step) => {
       const parent = await promise;
 
-      const sha = await cherryPick({
+      const sha = await cherryPickCommits({
         commits: step.shas,
         head: ref,
         octokit,
@@ -151,11 +150,11 @@ const checkSameHead = async ({
 }: {
   octokit: Octokit;
   owner: RepoOwner;
-  ref: Reference;
+  ref: Ref;
   repo: RepoName;
   sha: Sha;
 }) => {
-  const actualSha = await fetchReferenceSha({ octokit, owner, ref, repo });
+  const actualSha = await fetchRefSha({ octokit, owner, ref, repo });
   if (actualSha !== expectedSha) {
     throw new Error(
       [
@@ -188,14 +187,14 @@ const rebasePullRequest = async ({
       base: { ref: baseRef },
       head: { ref: headRef, sha: initialHeadSha },
     },
-  } = await octokit.pullRequests.get({
+  } = await octokit.pulls.get({
     number: pullRequestNumber,
     owner,
     repo,
   });
   // The SHA given by GitHub for the base branch is not always up to date.
   // A request is made to fetch the actual one.
-  const baseInitialSha = await fetchReferenceSha({
+  const baseInitialSha = await fetchRefSha({
     octokit,
     owner,
     ref: baseRef,
@@ -214,7 +213,7 @@ const rebasePullRequest = async ({
     initialHeadSha,
   });
   await _intercept({ initialHeadSha });
-  return withTemporaryReference({
+  return withTemporaryRef({
     action: async temporaryRef => {
       debug({ temporaryRef });
       const newSha = await performRebase({
@@ -231,8 +230,8 @@ const rebasePullRequest = async ({
         repo,
         sha: initialHeadSha,
       });
-      debug("updating reference with new SHA", newSha);
-      await updateReference({
+      debug("updating ref with new SHA", newSha);
+      await updateRef({
         // Rebase operations are not fast-forwards.
         force: true,
         octokit,
@@ -241,7 +240,7 @@ const rebasePullRequest = async ({
         repo,
         sha: newSha,
       });
-      debug("reference updated");
+      debug("ref updated");
       return newSha;
     },
     octokit,
@@ -252,6 +251,4 @@ const rebasePullRequest = async ({
   });
 };
 
-export { needAutosquashing };
-
-export default rebasePullRequest;
+export { needAutosquashing, rebasePullRequest };
