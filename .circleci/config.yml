@@ -1,4 +1,5 @@
-version: 2
+version: 2.1
+
 jobs:
   check:
     docker:
@@ -19,7 +20,6 @@ jobs:
           destination: coverage
 
 workflows:
-  version: 2
   check:
     jobs:
       - check:
