@@ -13,7 +13,6 @@ import {
   updateRef,
   withTemporaryRef,
 } from "shared-github-internals/lib/git";
-
 import { AutosquashingStep, getAutosquashingSteps } from "./autosquashing";
 
 const debug = createDebug("github-rebase");
@@ -188,8 +187,8 @@ const rebasePullRequest = async ({
       head: { ref: headRef, sha: initialHeadSha },
     },
   } = await octokit.pulls.get({
-    number: pullRequestNumber,
     owner,
+    pull_number: pullRequestNumber,
     repo,
   });
   // The SHA given by GitHub for the base branch is not always up to date.

@@ -1,5 +1,5 @@
 import {
-  CommitDetails,
+  CommitDetails as CommitFullDetails,
   CommitMessage,
   Sha,
 } from "shared-github-internals/lib/git";
@@ -9,6 +9,11 @@ type AutosquashingMode = null | "fixup" | "squash";
 type AutosquashingStep = {
   autosquashMessage: null | CommitMessage;
   shas: Sha[];
+};
+
+type CommitDetails = {
+  message: CommitFullDetails["message"];
+  sha: CommitFullDetails["sha"];
 };
 
 const getCommitSubjectAndBody = (commitMessage: CommitMessage) => {
@@ -124,4 +129,4 @@ const getAutosquashingSteps = (commitsDetails: CommitDetails[]) => {
   }, initialSteps);
 };
 
-export { AutosquashingStep, getAutosquashingSteps };
+export { AutosquashingStep, CommitDetails, getAutosquashingSteps };

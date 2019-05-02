@@ -19,7 +19,6 @@ import {
   getRefCommitsFromGitRepo,
   RefsDetails,
 } from "shared-github-internals/lib/tests/git";
-
 import { needAutosquashing, rebasePullRequest } from ".";
 import { createGitRepoAndRebase } from "./tests-utils";
 
@@ -128,7 +127,7 @@ describe.each([
       };
     },
   ],
-])("%s", (tmp, getProperties) => {
+])("%s", (tmp, getProperties: any) => {
   const initialState = getProperties();
 
   let deleteRefs: DeleteRefs;
@@ -308,7 +307,7 @@ describe("atomicity", () => {
         };
       },
     ],
-  ])("%s", (tmp, getProperties) => {
+  ])("%s", (tmp, getProperties: any) => {
     const {
       errorRegex,
       expectedFeatureCommits,

@@ -1,12 +1,11 @@
 import { flatten } from "lodash";
-import {
-  CommitDetails,
-  CommitMessage,
-  Ref,
-} from "shared-github-internals/lib/git";
+import { CommitMessage, Ref } from "shared-github-internals/lib/git";
 import { getRefCommitsFromGitRepo } from "shared-github-internals/lib/tests/git";
-
-import { AutosquashingStep, getAutosquashingSteps } from "./autosquashing";
+import {
+  AutosquashingStep,
+  CommitDetails,
+  getAutosquashingSteps,
+} from "./autosquashing";
 import { createGitRepoAndRebase } from "./tests-utils";
 
 const getCommit = ({
@@ -82,31 +81,35 @@ test.each([
       "squash! a\n\nLast fix",
     ],
   ],
-])("%s", async (tmp, commitMessages) => {
-  const ref = "feature";
-  const commitsDetails = commitMessages.map(
-    (message: CommitMessage, index: number) => ({
-      message,
-      sha: new Array(7).fill(index).join(""),
-    }),
-  );
-  const directory = await createGitRepoAndRebase({
-    initialState: commitsDetailsToInitialState({
-      commitsDetails,
+])(
+  "%s",
+  // @ts-ignore
+  async (tmp, commitMessages: CommitMessage[]) => {
+    const ref = "feature";
+    const commitsDetails = commitMessages.map(
+      (message: CommitMessage, index: number) => ({
+        message,
+        sha: new Array(7).fill(index).join(""),
+      }),
+    );
+    const directory = await createGitRepoAndRebase({
+      initialState: commitsDetailsToInitialState({
+        commitsDetails,
+        ref,
+      }),
       ref,
-    }),
-    ref,
-  });
-  const expectedCommits = await getRefCommitsFromGitRepo({
-    directory,
-    ref,
-  });
-  const expectedMessages = expectedCommits
-    .slice(1)
-    .map(({ message }) => message);
-  expect({ commitsDetails, expectedMessages }).toMatchSnapshot();
-  const steps = getAutosquashingSteps(commitsDetails);
-  expect(autosquashingStepsToCommitMessages({ commitsDetails, steps })).toEqual(
-    expectedMessages,
-  );
-});
+    });
+    const expectedCommits = await getRefCommitsFromGitRepo({
+      directory,
+      ref,
+    });
+    const expectedMessages = expectedCommits
+      .slice(1)
+      .map(({ message }) => message);
+    expect({ commitsDetails, expectedMessages }).toMatchSnapshot();
+    const steps = getAutosquashingSteps(commitsDetails);
+    expect(
+      autosquashingStepsToCommitMessages({ commitsDetails, steps }),
+    ).toEqual(expectedMessages);
+  },
+);
