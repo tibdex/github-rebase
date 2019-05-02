@@ -1,26 +1,26 @@
 {
   "author": "Thibault Derousseaux <tibdex@gmail.com>",
   "dependencies": {
-    "@octokit/rest": "^16.8.0",
-    "@types/debug": "^0.0.31",
-    "@types/node": "^10.12.18",
+    "@octokit/rest": "^16.25.0",
+    "@types/debug": "^4.1.4",
+    "@types/node": "^11.13.8",
     "debug": "^4.1.1",
-    "github-cherry-pick": "^1.0.0",
-    "shared-github-internals": "^1.0.0"
+    "github-cherry-pick": "^1.1.0",
+    "shared-github-internals": "^1.1.2"
   },
   "description": "Rebase a pull request using the GitHub REST API",
   "devDependencies": {
-    "@types/jest": "^23.3.13",
-    "@types/lodash": "^4.14.120",
-    "jest": "^23.6.0",
-    "jest-circus": "^23.6.0",
-    "jest-junit": "^6.0.1",
+    "@types/jest": "^24.0.12",
+    "@types/lodash": "^4.14.123",
+    "jest": "^24.7.1",
+    "jest-circus": "^24.7.1",
+    "jest-junit": "^6.4.0",
     "lodash": "^4.17.11",
-    "prettier": "^1.15.3",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.12.1",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.2.4"
+    "prettier": "^1.17.0",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.4.5"
   },
   "engines": {
     "node": ">= 6.11.2"
@@ -47,5 +47,5 @@
     "test": "jest",
     "tslint": "tslint --format stylish --project ."
   },
-  "version": "1.0.0"
+  "version": "1.1.0"
 }
