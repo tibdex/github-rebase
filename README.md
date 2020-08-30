@@ -94,7 +94,7 @@ To rebase the pull request, `github-rebase` would then take the following steps:
     |/
     * a5c5755 A
     ```
-3.  Check that `feature`'s reference is still `017bffc` with [GET /repos/:owner/:repo/git/refs/:ref](https://developer.github.com/v3/git/refs/#get-a-reference) or abort by jumpimg to step 5.
+3.  Check that `feature`'s reference is still `017bffc` with [GET /repos/:owner/:repo/git/refs/:ref](https://developer.github.com/v3/git/refs/#get-a-reference) or abort by jumping to step 5.
 4.  Set `feature`'s reference to the same as `temp` with [PATCH /repos/:owner/:repo/git/refs/:ref](https://developer.github.com/v3/git/refs/#update-a-reference).
     <!-- no corresponding Git CLI operation -->
     ```
