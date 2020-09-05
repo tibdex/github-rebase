@@ -8,6 +8,12 @@
 
 See [Autorebase](https://github.com/tibdex/autorebase) if you want to automatically rebase and merge green and up-to-date pull requests.
 
+# Maintenance update
+
+This library was developed to make [Autorebase](https://github.com/tibdex/autorebase) possible but focus has shifted to the development of its successor: [Autosquash](https://github.com/marketplace/actions/autosquash).
+
+This project will thus stop receiving updates.
+
 # Usage
 
 ```javascript
